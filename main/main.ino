@@ -3,12 +3,6 @@
 // 
 
 #include <Servo.h>
-//#include <AxisJoystick.h>
-//#include <DelegateJoystick.h>
-//#include <Joystick.h>
-//#include <XInverterJoystick.h>
-//#include <XYReplacerJoystick.h>
-//#include <YInverterJoystick.h>
 
 Servo ThrottleESCServo;  // create servo object to control the ESC
 
