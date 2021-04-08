@@ -42,13 +42,17 @@ void loop() {
 
         ThrottleESCServo.write(map(intRXThrottlePos, 0, 100, 0, 180));
 
-    }
+        }
+        else if (!Serial.available()){
+          
+            intThrottlePos = analogRead(THR_CONTROL_PIN);                    // reads the value of the potentiometer (value between 0 and 1023)
+            ThrottleESCServo.write(map(intThrottlePos, 0, 1023, 30, 120));   // scale it to use it with the servo (value between 0 and 180)
+
+          }
     
         Serial.println(intRXThrottlePos);
 
-//  intThrottlePos = analogRead(THR_CONTROL_PIN);            // reads the value of the potentiometer (value between 0 and 1023)
-//  intThrottlePos = map(intThrottlePos, 0, 1023, 30, 120);     // scale it to use it with the servo (value between 0 and 180)
-//  ThrottleESCServo.write(intThrottlePos);
+
 
   delay(10);
 
