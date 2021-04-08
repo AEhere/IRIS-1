@@ -81,30 +81,30 @@ void loop() {
   lcd.print(bmp.readPressure());
   delay(10);
 
-//  if (Serial.available()) {
-//
-//    char ch = Serial.read();
-//    if (ch >= '0' && ch <= '9') // is this an ascii digit between 0 and 9?
-//    {
-//      value = (value * 10) + (ch - '0'); // yes, accumulate the value
-//    }
-//    else if (ch == 10)  // is the character the newline character
-//    {
-//      intRXThrottlePos = value;
-//      value = 0; // reset val to 0 ready for the next sequence of digits
-//    }
-//
-//    Serial.println(intRXThrottlePos);
-//
-//    ThrottleESCServo.write(map(intRXThrottlePos, 0, 100, 0, 180));
-//
-//  }
-//  else if (!Serial.available()) {
+  if (Serial.available()) {
+
+    char ch = Serial.read();
+    if (ch >= '0' && ch <= '9') // is this an ascii digit between 0 and 9?
+    {
+      value = (value * 10) + (ch - '0'); // yes, accumulate the value
+    }
+    else if (ch == 10)  // is the character the newline character
+    {
+      intRXThrottlePos = value;
+      value = 0; // reset val to 0 ready for the next sequence of digits
+    }
+
+    Serial.println(intRXThrottlePos);
+
+    ThrottleESCServo.write(map(intRXThrottlePos, 0, 100, 0, 180));
+
+  }
+  else if (!Serial.available()) {
 
     intThrottlePos = analogRead(THR_CONTROL_PIN);                    // reads the value of the potentiometer (value between 0 and 1023)
-    ThrottleESCServo.write(map(intThrottlePos, 0, 1023, 30, 120));   // scale it to use it with the servo (value between 0 and 180)
+    ThrottleESCServo.write(map(intThrottlePos, 0, 1023, 10, 170));   // scale it to use it with the servo (value between 0 and 180)
 
-//  }
+  }
 
   Serial.println(intThrottlePos);
 }
