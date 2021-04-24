@@ -7,7 +7,15 @@
 Servo ThrottleESCServo;  // create servo object to control the ESC
 
 #define THR_ESC_PIN 3
-#define THR_CONTROL_PIN A7
+#define THR_CONTROL_PIN A0
+
+#include "RF24.h"
+
+#define CE_PIN  7
+#define CSN_PIN 8
+
+// Start the radio object
+RF24 radio(CE_PIN, CSN_PIN);
 
 int intThrottlePos = 0;    // variable to store the servo position
 int intRXThrottlePos = 0;   
@@ -25,32 +33,11 @@ void setup() {
 
 void loop() {
 
-        if (Serial.available()){
-        
-        char ch = Serial.read();
-          if(ch >= '0' && ch <= '9') // is this an ascii digit between 0 and 9?
-            {
-            value = (value * 10) + (ch - '0'); // yes, accumulate the value
-            }
-          else if (ch == 10)  // is the character the newline character
-          {
-            intRXThrottlePos = value;
-            value = 0; // reset val to 0 ready for the next sequence of digits
-          }           
+  
+        intThrottlePos = analogRead(THR_CONTROL_PIN);                    // reads the value of the potentiometer (value between 0 and 1023)
+        ThrottleESCServo.write(map(intThrottlePos, 512, 0, 10, 170));   // scale it to use it with the servo (value between 0 and 180)
 
-        Serial.println(intRXThrottlePos);
-
-        ThrottleESCServo.write(map(intRXThrottlePos, 0, 100, 0, 180));
-
-        }
-        else if (!Serial.available()){
-          
-            intThrottlePos = analogRead(THR_CONTROL_PIN);                    // reads the value of the potentiometer (value between 0 and 1023)
-            ThrottleESCServo.write(map(intThrottlePos, 0, 1023, 30, 120));   // scale it to use it with the servo (value between 0 and 180)
-
-          }
-    
-        Serial.println(intRXThrottlePos);
+        Serial.println(intThrottlePos);
 
 
 
