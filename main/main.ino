@@ -5,9 +5,10 @@
 #include "SPI.h"
 #include <Servo.h>
 #include "RF24.h"
+#include <nRF24L01.h>
 #include "printf.h"
 
-Servo ThrottleESCServo;  // create servo object to control the ESC
+// Servo ThrottleESCServo;  // create servo object to control the ESC
 
 #define ESC_THR_PIN 3
 #define SRV_ELEV_PIN 4
@@ -25,7 +26,7 @@ RF24 radio(CE_PIN, CSN_PIN);
 
 byte addresses[][6] = {"1Node","2Node"};
 
-unsigned long intTHRPos = 0;     // variable to store the servo position
+// unsigned long intTHRPos = 0;     // variable to store the servo position
 int intRXThrottlePos = 0;   // received throttle value
 int intELEVPos = 0;
 int intRUDPos = 0;
@@ -42,7 +43,7 @@ void setup() {
 
     printf_begin();
 
-    ThrottleESCServo.attach(ESC_THR_PIN);   //Attach the ESC channel
+    // ThrottleESCServo.attach(ESC_THR_PIN);   //Attach the ESC channel
 
 //  pinMode(3, OUTPUT);
 
@@ -52,7 +53,10 @@ void setup() {
     radio.openWritingPipe(addresses[1]);
     radio.openReadingPipe(1, addresses[0]);
     radio.startListening();
-    // radio.printDetails();
+    radio.setDataRate(RF24_250KBPS);
+    radio.setAutoAck(1);            //must the RX acknowledge the tramsmission?
+    radio.setRetries(5,15);
+    radio.printDetails();
     delay(1000);
     Serial.println("Radio set...");
     Serial.println("Starting loop...");
@@ -63,10 +67,10 @@ void setup() {
 
 void loop() {
 
-
+    int intRXThrottlePos;
     if( radio.available() ){
         while (radio.available()) {
-            radio.read( &intRXThrottlePos, sizeof(unsigned long) );
+            radio.read( &intRXThrottlePos, sizeof(int) );
 
             Serial.print("RX: ");
             Serial.println(intRXThrottlePos);
@@ -79,8 +83,8 @@ void loop() {
 
 
 
-
-  delay(1000);
+    Serial.println("Looping...");
+    delay(10);
 }
 //******************************************************************************
 //******************************************************************************
